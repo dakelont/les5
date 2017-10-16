@@ -1,0 +1,11 @@
+{
+  "name": "les5",
+  "version": "1.0.0",
+  "description": "Задание к занятию «Создаем простое API, используя express»",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
