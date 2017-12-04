@@ -1,6 +1,6 @@
 {
   "name": "les5",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Задание к занятию «Создаем простое API, используя express»",
   "main": "index.js",
   "scripts": {

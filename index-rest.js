@@ -15,7 +15,7 @@ app.get("/users", function(req, res) {
 let dataUsers = [];
 let i=0;
 
-app.post("/users/add/", function(req, res) { 
+app.post("/users/add/", function(req, res) {
 	dataUsers[i]={};
 	console.log(req.body);
 	if (req.body.name && req.body.score) {
@@ -37,26 +37,40 @@ app.post("/users/add/", function(req, res) {
 		console.log('свойства name и score должны существовать');
 	}
 });
-app.get("/users/show/:id", function(req, res) { 
+
+app.get("/users/show/:param/:id", function(req, res) { 
 	let sendData = [];
 	let search=0;
 	for (let m=0; m < dataUsers.length; m++) {
 		if (req.params.id == dataUsers[m].name) {
-			search=1;
-			sendData.push('user name - "' + dataUsers[m].name + '"; score - "' + dataUsers[m].score + '"<br>');
+			switch(req.params.param) {
+				case 'name' : {
+					search=1;
+					sendData.push('name - "' + dataUsers[m].name + '"<br>');
+					break;
+				}
+				case 'score' : {
+					search=1;
+					sendData.push('score - "' + dataUsers[m].score + '"<br>');
+					break;
+				}
+				default: {
+					sendData.push('user name - "' + dataUsers[m].name + '"; score - "' + dataUsers[m].score + '"<br>');
+				}
+			}
+			if (search == 1) {
+				console.log('Пользователь "' + req.params.id + '" успешно найден');
+			}
 		}
 	}
-
-	if (search==1) {
-		sendData.push('user ' + req.params.id);
-		console.log('Пользователь "' + req.params.id + '" успешно найден');
-	}
-	else {
+	if (search==0) {
 		sendData.push('error');
 		console.log('Пользователь "' + req.params.id + '" не найден');
 	}
+
 	res.send(sendData.join());
 });
+
 app.put("/users/update/:id", function(req, res) { 
 	let sendData = [];
 	let search=0;

@@ -7,44 +7,50 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({"extended": true}));
 
-app.post("/user/", function(req, res) { 
-	dataUsers[i]={};
-
-	let sendData = [];
-	
-	if (req.body.name && req.body.score && req.body.new) {
-		dataUsers[i].name = req.body.name;
-		dataUsers[i].score = req.body.score;
-		i++;
+var rpc = {
+	add: function(e, du) {
+		dataUsers.name = e.name;
+		dataUsers.score = e.score;
 		console.log('Пользователь успешно добавлен');
-	}
-	else if (req.body.name && req.body.score) {
-		for (let m=0; m < dataUsers.length; m++) {
-			if (req.body.name == dataUsers[m].name) {
-				dataUsers[m].name = req.body.name;
-				dataUsers[m].score = req.body.score;
+		return du.push(dataUsers);
+	},
+	update: function(e,du) {
+		for (let m=0; m < du.length; m++) {
+			if (e.name == du[m].name) {
+				du.name = e.name;
+				du.score = e.score;
 				console.log('Пользователь успешно обновлен');
 			}
 		}
-	}
-	else if (req.body.name && req.body.del) {
-		for (let m=0; m < dataUsers.length; m++) {
-			if (req.body.name == dataUsers[m].name) {
-				dataUsers.remove(m);
+		return du;
+	},
+	delete: function(e, du) {
+		for (let m=0; m < du.length; m++) {
+			if (e.name == du[m].name) {
+				du.remove(m);
 				console.log('Пользователь успешно удален');
 			}
 		}
-	}
-	else if (req.body.name) {
-		for (let m=0; m < dataUsers.length; m++) {
-			if (req.body.name == dataUsers[m].name) {
-				let result = {name:dataUsers[m].name, score:dataUsers[m].score};
+		return du;
+	},
+	get: function(e, du) {
+		for (let m=0; m < du.length; m++) {
+			if (e.name ==  du[m].name) {
+				let result = {name: du[m].name, score: du[m].score};
 				console.log('Пользователь найден');
 			}
 		}
+		if (!result) console.log('Пользователь не найден');
+		return result;
 	}
-	else {
-		console.log('Пользователь не найден');
-	}
+}
+
+app.post("/user/", function(req, res) { 
+	let method = req.body.method;
+	let du = {};
+	
+	du = rpc[method](req.body, du);
+
+	res.send(du);
 });
 app.listen(3001, console.log("Ready on port 3001"));
